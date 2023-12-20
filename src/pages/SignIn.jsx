@@ -1,13 +1,15 @@
 /* eslint-disable no-unused-vars */
 import { useState } from "react";
-import { Link,useNavigate } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
+import { useDispatch, useSelector } from 'react-redux'
+import { signInFailure, signInStart, signInSuccess } from "../redux/user/userSlice.js";
 
 export default function SignIn() {
 
   const [formData, setFormData] = useState({});
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const { loading, error } = useSelector((state) => state.user);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleChange = (e) => {
     setFormData(
@@ -16,12 +18,11 @@ export default function SignIn() {
         [e.target.id]: e.target.value
       }
     )
-    //console.log(formData);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
+    dispatch(signInStart());
     let data;
     await fetch('/api/auth/signin', {
       method: 'POST',
@@ -32,17 +33,13 @@ export default function SignIn() {
     }).then(async (res) => {
       data = await res.json();
       if (!data.success) {
-        //console.log(data);
-        setLoading(false);
-        setError(data.customMessage + " : " + data.message);
-      }else{
-        setLoading(false);
-        setError(null);
+        dispatch(signInFailure(data.customMessage + " : " + data.message));
+      } else {
+        dispatch(signInSuccess(data.userData));
         navigate('/');
       }
     }).catch((err) => {
-      console.log(err);
-      setLoading(false);
+      dispatch(signInFailure("Error : " + err.message));
     });
   }
 
@@ -54,7 +51,7 @@ export default function SignIn() {
         <input type="password" placeholder="password" className="border p-3 rounded-lg" id="password" onChange={handleChange} />
         <button disabled={loading} className="bg-slate-700 text-white p-3 rounded-lg uppercase hover:opacity-95 disabled:opacity-80">
           {loading ? "Loading..." : "Sign In"}
-        </button> 
+        </button>
       </form>
       <div className="flex gap-3 mt-5">
         <p>Don&apos;t have account ?</p>
