@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars */
 import { useState } from "react";
 import { Link,useNavigate } from "react-router-dom"
+import OAuth from "../components/OAuth";
 
 export default function SignUp() {
 
@@ -16,7 +17,6 @@ export default function SignUp() {
         [e.target.id]: e.target.value
       }
     )
-    //console.log(formData);
   };
 
   const handleSubmit = async (e) => {
@@ -32,7 +32,6 @@ export default function SignUp() {
     }).then(async (res) => {
       data = await res.json();
       if (!data.success) {
-        //console.log(data);
         setLoading(false);
         setError(data.customMessage + " : " + data.message);
       }else{
@@ -56,6 +55,7 @@ export default function SignUp() {
         <button disabled={loading} className="bg-slate-700 text-white p-3 rounded-lg uppercase hover:opacity-95 disabled:opacity-80">
           {loading ? "Loading..." : "Sign In"}
         </button>
+        <OAuth/>
       </form>
       <div className="flex gap-3 mt-5">
         <p>Already have account ?</p>
