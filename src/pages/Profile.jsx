@@ -6,11 +6,6 @@ export default function Profile() {
 
   const { currentUser } = useSelector(state => state.user);
 
-  const loading = false;
-  const handleChange = () => {
-
-  }
-
   return (
     <div className="p-3 max-w-lg mx-auto">
       <h1 className="text-3xl text-center font-semibold my-7">Profile</h1>
